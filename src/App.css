@@ -43,3 +43,12 @@
   background-size: cover;
   background-position: center;
 }
+
+.content-start {
+  opacity: 0;
+}
+
+.content-end {
+  opacity: 1;
+  transition: all 0.5s;
+}

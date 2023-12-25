@@ -5,12 +5,15 @@ import mainImg from "./img/bg.png";
 import { useState } from "react";
 import shoesData from "./data";
 import Detail from "./routes/Detail";
+import axios from "axios";
 
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 
 function App() {
   let [shoes, setShoes] = useState(shoesData);
   let navigate = useNavigate();
+  let [btnCount, setBtnCount] = useState(0);
+  let [loading, setLoading] = useState(false);
 
   return (
     <div className="App">
@@ -79,6 +82,35 @@ function App() {
                   })}
                 </Row>
               </Container>
+
+              {loading == false ? null : <div>Loading...</div>}
+              {btnCount >= 2 ? (
+                <div>더 이상 상품이 존재하지 않습니다.</div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setBtnCount(btnCount + 1);
+                    setLoading(true);
+                    axios
+                      .get(
+                        `https://codingapple1.github.io/shop/data${
+                          btnCount + 2
+                        }.json`
+                      )
+                      .then((result) => {
+                        let copy = [...shoes, ...result.data];
+                        setShoes(copy);
+                        setLoading(false);
+                      })
+                      .catch(() => {
+                        console.log("실패함");
+                        setLoading(false);
+                      });
+                  }}
+                >
+                  더보기
+                </button>
+              )}
             </>
           }
         />
@@ -112,10 +144,12 @@ function Shoes(props) {
           (props.shoes[props.index].id + 1) +
           ".jpg"
         }
-        alt=""
+        alt="이미지 로딩안됨"
         width="80%"
       />
-      <h4>{props.shoes[props.index].title}</h4>
+      <Link to={"/detail/" + props.index}>
+        <h4>{props.shoes[props.index].title}</h4>
+      </Link>
       <p>{props.shoes[props.index].content}</p>
     </Col>
   );
