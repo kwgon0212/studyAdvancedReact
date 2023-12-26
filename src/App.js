@@ -2,18 +2,22 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Col, Container, Nav, Navbar, Row } from "react-bootstrap";
 import mainImg from "./img/bg.png";
-import { useState } from "react";
+import { createContext, useState } from "react";
 import shoesData from "./data";
 import Detail from "./routes/Detail";
+import Cart from "./routes/Cart";
 import axios from "axios";
 
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
+
+export let Context1 = createContext();
 
 function App() {
   let [shoes, setShoes] = useState(shoesData);
   let navigate = useNavigate();
   let [btnCount, setBtnCount] = useState(0);
   let [loading, setLoading] = useState(false);
+  let [재고] = useState([19, 10, 11]);
 
   return (
     <div className="App">
@@ -114,8 +118,15 @@ function App() {
             </>
           }
         />
-        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
-
+        <Route
+          path="/detail/:id"
+          element={
+            <Context1.Provider value={{ 재고, shoes }}>
+              <Detail shoes={shoes} />
+            </Context1.Provider>
+          }
+        />
+        <Route path="/cart" element={<Cart></Cart>}></Route>
         <Route path="/about" element={<About />}>
           <Route path="member" element={<div>멤버페이지임</div>} />
           <Route path="location" element={<div>위치정보페이지임</div>} />

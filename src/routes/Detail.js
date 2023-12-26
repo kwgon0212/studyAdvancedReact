@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
+
+import { Context1 } from "./../App";
 
 let BtnColor = styled.button`
   background: ${(props) => props.bg};
@@ -19,6 +21,8 @@ let Box = styled.div`
 `;
 
 function Detail(props) {
+  let { 재고, shoes } = useContext(Context1);
+
   let [count, setCount] = useState(0);
   let [alerts, setAlert] = useState(true);
   let [num, setNum] = useState("");
