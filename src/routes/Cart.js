@@ -1,23 +1,25 @@
 import Table from "react-bootstrap/Table";
 import { useDispatch, useSelector } from "react-redux";
 import { increaseAge, changeName } from "./../store/userSlice";
+import { decreaseQuantity, increaseQuantity, rmItem } from "../store";
 
 function Cart() {
   let cart = useSelector((state) => state.cart);
   let user = useSelector((state) => state.user);
   let dispatch = useDispatch();
+
   return (
     <>
       <div>
         {user.age}살인 {user.name}의 장바구니
       </div>
-      <button
+      {/* <button
         onClick={() => {
           dispatch(increaseAge(100));
         }}
       >
         버튼
-      </button>
+      </button> */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -25,6 +27,7 @@ function Cart() {
             <th>상품명</th>
             <th>수량</th>
             <th>변경하기</th>
+            <th>삭제</th>
           </tr>
         </thead>
         <tbody>
@@ -36,11 +39,29 @@ function Cart() {
                 <td>{a.count}</td>
                 <td>
                   <button
+                    style={{ backgroundColor: "transparent", border: "none" }}
                     onClick={() => {
-                      dispatch(changeName());
+                      dispatch(increaseQuantity(cart[i].id));
                     }}
                   >
                     +
+                  </button>
+                  <button
+                    style={{ backgroundColor: "transparent", border: "none" }}
+                    onClick={() => {
+                      dispatch(decreaseQuantity(cart[i].id));
+                    }}
+                  >
+                    -
+                  </button>
+                </td>
+                <td>
+                  <button
+                    onClick={() => {
+                      dispatch(rmItem(cart[i].id));
+                    }}
+                  >
+                    ❌
                   </button>
                 </td>
               </tr>

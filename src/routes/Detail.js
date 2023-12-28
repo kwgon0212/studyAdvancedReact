@@ -4,6 +4,8 @@ import styled from "styled-components";
 import Nav from "react-bootstrap/Nav";
 
 import { Context1 } from "./../App";
+import { addItem } from "../store";
+import { useDispatch } from "react-redux";
 
 let BtnColor = styled.button`
   background: ${(props) => props.bg};
@@ -33,6 +35,16 @@ function Detail(props) {
   let 찾은상품 = props.shoes.find((x) => {
     return x.id == id;
   });
+
+  useEffect(() => {
+    let data = JSON.parse(localStorage.getItem("watched"));
+    data.push(찾은상품.id);
+    data = new Set(data);
+    data = Array.from(data);
+    localStorage.setItem("watched", JSON.stringify(data));
+  }, []);
+
+  let dispatch = useDispatch();
 
   useEffect(() => {
     setTimeout(() => {
@@ -99,7 +111,16 @@ function Detail(props) {
               setNum(e.target.value);
             }}
           />
-          <button className="btn btn-danger">주문하기</button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              dispatch(
+                addItem({ id: 찾은상품.id, name: 찾은상품.title, count: 1 })
+              );
+            }}
+          >
+            주문하기
+          </button>
         </div>
       </div>
       <Nav variant="tabs" defaultActiveKey="link0">

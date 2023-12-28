@@ -2,28 +2,48 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Col, Container, Nav, Navbar, Row } from "react-bootstrap";
 import mainImg from "./img/bg.png";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import shoesData from "./data";
 import Detail from "./routes/Detail";
 import Cart from "./routes/Cart";
 import axios from "axios";
+// import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "react-query";
 
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 
 export let Context1 = createContext();
 
 function App() {
+  useEffect(() => {
+    if (localStorage.getItem("watched") == null) {
+      localStorage.setItem("watched", JSON.stringify([]));
+    }
+  }, []);
+
   let [shoes, setShoes] = useState(shoesData);
   let navigate = useNavigate();
   let [btnCount, setBtnCount] = useState(0);
   let [loading, setLoading] = useState(false);
   let [재고] = useState([19, 10, 11]);
 
+  let result = useQuery(
+    ["userName"],
+    () => {
+      return axios
+        .get("https://codingapple1.github.io/userdata.json")
+        .then((a) => {
+          return a.data;
+        });
+    },
+    { staleTime: 2000 }
+  );
+
   return (
     <div className="App">
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home">신발#</Navbar.Brand>
+          <Navbar.Brand href="/">신발#</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link
               onClick={() => {
@@ -46,6 +66,18 @@ function App() {
             >
               About
             </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate("/cart");
+              }}
+            >
+              Cart
+            </Nav.Link>
+          </Nav>
+          <Nav className="ms-auto" style={{ color: "white" }}>
+            {result.isLoading && "로딩중..."}
+            {result.error && "에러남"}
+            {result.data && "안녕하세요 " + result.data.name + " 님!"}
           </Nav>
         </Container>
       </Navbar>

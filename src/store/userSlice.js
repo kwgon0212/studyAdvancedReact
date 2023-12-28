@@ -5,6 +5,7 @@ let user = createSlice({
   initialState: { name: "kim", age: 20 },
   reducers: {
     changeName(state) {
+      console.log(state.name);
       state.name = "park";
     },
     increaseAge(state, a) {
